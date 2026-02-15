@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Asistencia - ENPS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .clase-info {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        
+        .clase-info h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .clase-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .message.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+        
+        .view {
+            display: none;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            width: auto;
+            margin-top: 0;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: monospace;
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 32px;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .attendance-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .attendance-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .attendance-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendance-item strong {
+            color: #333;
+        }
+        
+        .attendance-item small {
+            color: #666;
+        }
+        
+        .attendance-item.presente {
+            background: #d4edda;
+        }
+        
+        .attendance-item.ausente {
+            background: #f8d7da;
+        }
+        
+        .helper-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .button-group button {
+            flex: 1;
+        }
+        
+        .qr-container {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        #qrcode {
+            display: inline-block;
+            margin: 20px auto;
+        }
+        
+        .cronograma-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .cronograma-table th,
+        .cronograma-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .cronograma-table th {
+            background: #f8f9ff;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .cronograma-table tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .admin-panel {
+            max-width: 900px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vista Principal: Registro de Asistencia -->
+    <div class="container view active" id="registroView">
+        <div class="logo">
+            <h1>📚 Asistencia ENPS</h1>
+            <p>Evaluación Neuropsicológica</p>
+        </div>
+        
+        <div class="clase-info" id="claseInfo">
+            <h3 id="claseTitulo">Cargando información de clase...</h3>
+            <p id="claseFecha"></p>
+        </div>
+        
+        <!-- Indicador de ventana de asistencia -->
+        <div id="ventanaIndicador" style="display: none; background: #28a745; color: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 5px;">
+                ⏰ Ventana abierta
+            </div>
+            <div id="tiempoRestante" style="font-size: 24px; font-weight: 700;">
+                --:--
+            </div>
+        </div>
+        
+        <div id="ventanaCerrada" style="display: none; background: #f8d7da; color: #721c24; padding: 20px; border-radius: 10px; text-align: center;">
+            <div style="font-size: 48px; margin-bottom: 10px;">🔒</div>
+            <h3 style="margin-bottom: 10px;">Ventana de asistencia cerrada</h3>
+            <p style="font-size: 14px;">El docente debe habilitar el registro desde el panel de administración</p>
+        </div>
+        
+        <form id="asistenciaForm">
+            <div class="form-group">
+                <label for="dni">DNI (sin puntos ni espacios)</label>
+                <input 
+                    type="text" 
+                    id="dni" 
+                    name="dni" 
+                    placeholder="12345678"
+                    pattern="[0-9]{7,8}"
+                    required
+                    autocomplete="off"
+                >
+                <p class="helper-text">Ingresá tu DNI de 7 u 8 dígitos</p>
+            </div>
+            
+            <button type="submit" id="submitBtn">
+                ✓ Registrar Asistencia
+            </button>
+        </form>
+        
+        <div class="message" id="message"></div>
+        
+        <div class="links">
+            <a href="#" id="verMisAsistencias">Ver mis asistencias</a>
+            <a href="#" id="verCronograma">Cronograma</a>
+            <a href="#" id="adminToggle">Admin</a>
+        </div>
+    </div>
+
+    <!-- Vista Alumno: Mis Asistencias -->
+    <div class="container view" id="alumnoView">
+        <div class="logo">
+            <h1>📊 Mis Asistencias</h1>
+            <p>Evaluación Neuropsicológica</p>
+        </div>
+        
+        <form id="consultaForm">
+            <div class="form-group">
+                <label for="dniConsulta">Ingresá tu DNI</label>
+                <input 
+                    type="text" 
+                    id="dniConsulta" 
+                    placeholder="12345678"
+                    pattern="[0-9]{7,8}"
+                    required
+                >
+            </div>
+            <button type="submit">Ver mis asistencias</button>
+        </form>
+        
+        <div id="resultadoConsulta" style="display: none; margin-top: 25px;">
+            <h3 style="color: #333; margin-bottom: 15px;">Resumen</h3>
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="presenciasCantidad">0</h3>
+                    <p>Presentes</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="ausenciasCantidad">0</h3>
+                    <p>Ausencias</p>
+                </div>
+            </div>
+            
+            <h3 style="color: #333; margin-top: 20px; margin-bottom: 15px;">Detalle por clase</h3>
+            <div class="attendance-list" id="detalleAlumno"></div>
+        </div>
+        
+        <div class="links">
+            <a href="#" id="volverDeAlumno">← Volver</a>
+        </div>
+    </div>
+
+    <!-- Vista: Cronograma -->
+    <div class="container view" id="cronogramaView">
+        <div class="logo">
+            <h1>📅 Cronograma 2026</h1>
+            <p>Evaluación Neuropsicológica</p>
+        </div>
+        
+        <table class="cronograma-table">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Clase</th>
+                    <th>Tema</th>
+                </tr>
+            </thead>
+            <tbody id="cronogramaBody"></tbody>
+        </table>
+        
+        <div class="links">
+            <a href="#" id="volverDeCronograma">← Volver</a>
+        </div>
+    </div>
+
+    <!-- Vista Login Admin -->
+    <div class="container view" id="loginView">
+        <div class="logo">
+            <h1>🔐 Acceso Administrador</h1>
+            <p>Panel de Control</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="Ingresá la contraseña"
+                    required
+                >
+            </div>
+            <button type="submit">Ingresar</button>
+        </form>
+        
+        <div class="message" id="loginMessage"></div>
+        
+        <div class="links">
+            <a href="#" id="volverDeLogin">← Volver</a>
+        </div>
+    </div>
+
+    <!-- Panel de Administración -->
+    <div class="container admin-panel view" id="adminPanel">
+        <div class="logo">
+            <h1>⚙️ Panel de Administración</h1>
+            <p>Sistema de Asistencia</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="asistencias">Resumen</button>
+            <button class="tab" data-tab="porclase">Por Clase</button>
+            <button class="tab" data-tab="alumnos">Alumnos</button>
+            <button class="tab" data-tab="qr">QR Code</button>
+            <button class="tab" data-tab="config">Configuración</button>
+        </div>
+        
+        <!-- Tab Asistencias -->
+        <div class="tab-content active" id="asistencias-tab">
+            <!-- Control de ventana de asistencia -->
+            <div style="background: #f8f9ff; padding: 20px; border-radius: 10px; margin-bottom: 25px;">
+                <h3 style="color: #333; margin-bottom: 15px;">⏰ Control de Ventana de Asistencia</h3>
+                
+                <div id="ventanaControles">
+                    <div class="form-group">
+                        <label for="duracionVentana">Duración de la ventana (minutos)</label>
+                        <select id="duracionVentana" style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px;">
+                            <option value="2">2 minutos</option>
+                            <option value="5" selected>5 minutos</option>
+                            <option value="10">10 minutos</option>
+                            <option value="15">15 minutos</option>
+                        </select>
+                    </div>
+                    
+                    <div id="estadoVentana">
+                        <!-- Se llenará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalAsistencias">0</h3>
+                    <p>Registros totales</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="alumnosHoy">0</h3>
+                    <p>Presentes hoy</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalAlumnos">0</h3>
+                    <p>Alumnos cargados</p>
+                </div>
+            </div>
+            
+            <button id="exportBtn" class="btn-success">
+                📥 Descargar Excel
+            </button>
+            
+            <div style="margin-top: 25px;">
+                <h3 style="margin-bottom: 15px; color: #333;">Últimas asistencias</h3>
+                <div class="attendance-list" id="attendanceList">
+                    <p style="text-align: center; color: #666;">No hay registros aún</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Por Clase -->
+        <div class="tab-content" id="porclase-tab">
+            <h3 style="margin-bottom: 15px; color: #333;">Asistencia por Clase</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                Seleccioná una clase para ver quién estuvo presente y quién faltó
+            </p>
+            
+            <div class="form-group">
+                <label for="selectClase">Seleccionar clase</label>
+                <select id="selectClase" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 14px;">
+                    <option value="">-- Seleccioná una clase --</option>
+                </select>
+            </div>
+            
+            <div id="detalleClase" style="display: none;">
+                <div class="stats" style="margin-bottom: 20px;">
+                    <div class="stat-card">
+                        <h3 id="presentesClase">0</h3>
+                        <p>Presentes</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="ausentesClase">0</h3>
+                        <p>Ausentes</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="porcentajeClase">0%</h3>
+                        <p>Asistencia</p>
+                    </div>
+                </div>
+                
+                <button id="exportClaseBtn" class="btn-success" style="margin-bottom: 20px;">
+                    📥 Descargar Excel de esta clase
+                </button>
+                
+                <h4 style="color: #333; margin-bottom: 10px;">Presentes</h4>
+                <div class="attendance-list" id="listaPresentesClase" style="margin-bottom: 20px; max-height: 200px;">
+                    <p style="text-align: center; color: #666;">No hay registros</p>
+                </div>
+                
+                <h4 style="color: #333; margin-bottom: 10px;">Ausentes</h4>
+                <div class="attendance-list" id="listaAusentesClase" style="max-height: 200px;">
+                    <p style="text-align: center; color: #666;">No hay datos</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Alumnos -->
+        <div class="tab-content" id="alumnos-tab">
+            <h3 style="margin-bottom: 15px; color: #333;">Cargar lista de alumnos</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">
+                Ingresá un alumno por línea en formato: <strong>DNI - Nombre Completo</strong>
+            </p>
+            <textarea id="alumnosTextarea" placeholder="12345678 - Juan Pérez&#10;23456789 - María González&#10;34567890 - Carlos López"></textarea>
+            <div class="helper-text">Ejemplo: 12345678 - Juan Pérez</div>
+            
+            <div class="button-group">
+                <button id="saveAlumnosBtn" class="btn-success">💾 Guardar Alumnos</button>
+                <button id="clearAlumnosBtn" class="btn-secondary">🗑️ Limpiar Todo</button>
+            </div>
+            
+            <div class="message" id="alumnosMessage"></div>
+        </div>
+        
+        <!-- Tab QR -->
+        <div class="tab-content" id="qr-tab">
+            <h3 style="margin-bottom: 15px; color: #333; text-align: center;">Código QR para escanear</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px; text-align: center;">
+                Mostrá este QR en clase para que los alumnos registren su asistencia
+            </p>
+            <div class="qr-container">
+                <div id="qrcode"></div>
+                <button id="downloadQRBtn" class="btn-success">📥 Descargar QR</button>
+            </div>
+        </div>
+        
+        <!-- Tab Configuración -->
+        <div class="tab-content" id="config-tab">
+            <h3 style="margin-bottom: 15px; color: #333;">Cambiar contraseña</h3>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="newPassword">Nueva contraseña</label>
+                    <input type="password" id="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn-success">💾 Cambiar Contraseña</button>
+            </form>
+            <div class="message" id="configMessage"></div>
+            
+            <div style="margin-top: 30px; padding: 15px; background: #f8d7da; border-radius: 10px;">
+                <h4 style="color: #721c24; margin-bottom: 10px;">⚠️ Zona peligrosa</h4>
+                <p style="color: #721c24; font-size: 14px; margin-bottom: 15px;">Esta acción eliminará TODOS los datos del sistema permanentemente.</p>
+                <button id="resetSystemBtn" class="btn-secondary">🗑️ Resetear Sistema Completo</button>
+            </div>
+        </div>
+        
+        <div class="links" style="margin-top: 25px;">
+            <a href="#" id="cerrarSesion">Cerrar Sesión</a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        // Cronograma de clases
+        const cronograma = [
+            { fecha: '2026-03-05', numero: 1, tema: 'Introducción a la materia: Introducción a la ENPS, Batería fijas vs flexibles' },
+            { fecha: '2026-03-12', numero: 2, tema: 'Anamnesis + Observación conductual' },
+            { fecha: '2026-03-19', numero: 3, tema: 'Test de Screening' },
+            { fecha: '2026-03-26', numero: 4, tema: 'Inteligencia premórbida + medidas de déficits - Puntaje Z, Escalar, Estándar, Puntaje T' },
+            { fecha: '2026-04-09', numero: 5, tema: 'Inteligencia actual e introducción al WAIS IV' },
+            { fecha: '2026-04-16', numero: 6, tema: 'WAIS IV (Administración)' },
+            { fecha: '2026-04-23', numero: 7, tema: 'Funciones Estado: Nivel de alerta y Atención' },
+            { fecha: '2026-04-30', numero: 8, tema: 'Funciones Estado II: Funciones Ejecutivas y Cognición Social' },
+            { fecha: '2026-05-07', numero: 9, tema: 'Memoria' },
+            { fecha: '2026-05-14', numero: 10, tema: 'Lenguaje' },
+            { fecha: '2026-05-21', numero: 11, tema: 'Gnosias y Praxias' },
+            { fecha: '2026-05-28', numero: 12, tema: 'Repaso Parcial' },
+            { fecha: '2026-08-06', numero: 13, tema: 'La redacción del informe neuropsicológico' },
+            { fecha: '2026-08-13', numero: 14, tema: 'ENPS en Personas con Bajo Nivel Educacional y en el Adulto Joven' },
+            { fecha: '2026-08-20', numero: 15, tema: 'La ENPS en las principales Enfermedades Neurológicas I (DCL)' },
+            { fecha: '2026-08-27', numero: 16, tema: 'La ENPS en las principales Enfermedades Neurológicas II (Demencias corticales)' },
+            { fecha: '2026-09-03', numero: 17, tema: 'La ENPS en las principales Enfermedades Neurológicas IV (TEC- ACV- Tumores- mano ajena)' },
+            { fecha: '2026-09-10', numero: 18, tema: 'La ENPS en las principales Enfermedades Neurológicas III (Trastornos del movimiento)' },
+            { fecha: '2026-09-17', numero: 19, tema: 'La ENPS en las principales Enfermedades Neurológicas V (Epilepsia y EM)' },
+            { fecha: '2026-09-24', numero: 20, tema: 'La ENPS en las principales Enfermedades Neuropsiquiátricas I (Depresión y Esquizofrenia-TB)' },
+            { fecha: '2026-10-01', numero: 21, tema: 'La ENPS en las principales Enfermedades Neuropsiquiátricas II (ADHD- Adicciones)' },
+            { fecha: '2026-10-08', numero: 22, tema: 'La ENPS en las principales Enfermedades Neuropsiquiátricas III (Trastornos de la cognición social- Asperger)' },
+            { fecha: '2026-10-15', numero: 23, tema: 'ENPS Online y simulación' }
+        ];
+
+        // Storage keys
+        const STORAGE_KEYS = {
+            alumnos: 'enps_alumnos',
+            asistencias: 'enps_asistencias',
+            password: 'enps_admin_password',
+            ventana: 'enps_ventana_asistencia'
+        };
+
+        // Contraseña por defecto
+        const DEFAULT_PASSWORD = 'admin2026';
+
+        // Inicialización
+        let alumnos = JSON.parse(localStorage.getItem(STORAGE_KEYS.alumnos) || '[]');
+        let asistencias = JSON.parse(localStorage.getItem(STORAGE_KEYS.asistencias) || '[]');
+        let adminPassword = localStorage.getItem(STORAGE_KEYS.password) || DEFAULT_PASSWORD;
+        let ventanaAsistencia = JSON.parse(localStorage.getItem(STORAGE_KEYS.ventana) || 'null');
+        let intervaloCronometro = null;
+
+        // Funciones de utilidad
+        function guardarAlumnos() {
+            localStorage.setItem(STORAGE_KEYS.alumnos, JSON.stringify(alumnos));
+        }
+
+        function guardarAsistencias() {
+            localStorage.setItem(STORAGE_KEYS.asistencias, JSON.stringify(asistencias));
+        }
+
+        function guardarPassword() {
+            localStorage.setItem(STORAGE_KEYS.password, adminPassword);
+        }
+
+        function guardarVentana() {
+            localStorage.setItem(STORAGE_KEYS.ventana, JSON.stringify(ventanaAsistencia));
+        }
+
+        function formatearFecha(fecha) {
+            const opciones = { year: 'numeric', month: 'long', day: 'numeric' };
+            return new Date(fecha + 'T00:00:00').toLocaleDateString('es-AR', opciones);
+        }
+
+        function obtenerClaseActual() {
+            const hoy = new Date().toISOString().split('T')[0];
+            return cronograma.find(clase => clase.fecha === hoy) || cronograma[0];
+        }
+
+        function mostrarMensaje(elemento, texto, tipo) {
+            elemento.textContent = texto;
+            elemento.className = `message ${tipo} show`;
+            setTimeout(() => {
+                elemento.classList.remove('show');
+            }, 5000);
+        }
+
+        function cambiarVista(vistaId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(vistaId).classList.add('active');
+        }
+
+        // Actualizar información de clase
+        function actualizarInfoClase() {
+            const claseActual = obtenerClaseActual();
+            document.getElementById('claseTitulo').textContent = `Clase ${claseActual.numero}: ${claseActual.tema}`;
+            document.getElementById('claseFecha').textContent = formatearFecha(claseActual.fecha);
+        }
+
+        // Cargar cronograma
+        function cargarCronograma() {
+            const tbody = document.getElementById('cronogramaBody');
+            tbody.innerHTML = cronograma.map(clase => `
+                <tr>
+                    <td>${formatearFecha(clase.fecha)}</td>
+                    <td style="text-align: center;">${clase.numero}</td>
+                    <td>${clase.tema}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Formulario de asistencia
+        document.getElementById('asistenciaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Verificar si la ventana está activa
+            if (!ventanaAsistencia || ventanaAsistencia.fin < Date.now()) {
+                mostrarMensaje(
+                    document.getElementById('message'), 
+                    '❌ La ventana de asistencia está cerrada. Esperá a que el docente la habilite.', 
+                    'error'
+                );
+                return;
+            }
+            
+            const dni = document.getElementById('dni').value.trim();
+            const mensaje = document.getElementById('message');
+            
+            // Validar DNI
+            if (!/^\d{7,8}$/.test(dni)) {
+                mostrarMensaje(mensaje, '❌ El DNI debe tener 7 u 8 dígitos', 'error');
+                return;
+            }
+            
+            // Verificar si el alumno está en la lista
+            const alumno = alumnos.find(a => a.dni === dni);
+            
+            if (alumnos.length > 0 && !alumno) {
+                mostrarMensaje(mensaje, '❌ DNI no registrado. Consultá con el docente.', 'error');
+                return;
+            }
+            
+            // Verificar asistencia duplicada hoy
+            const hoy = new Date().toISOString().split('T')[0];
+            const yaRegistrado = asistencias.some(a => 
+                a.dni === dni && a.fecha.startsWith(hoy)
+            );
+            
+            if (yaRegistrado) {
+                mostrarMensaje(mensaje, '⚠️ Ya registraste tu asistencia hoy', 'error');
+                return;
+            }
+            
+            // Registrar asistencia
+            const claseActual = obtenerClaseActual();
+            const registro = {
+                dni: dni,
+                nombre: alumno ? alumno.nombre : 'Alumno no identificado',
+                fecha: new Date().toISOString(),
+                clase: claseActual.numero,
+                tema: claseActual.tema
+            };
+            
+            asistencias.unshift(registro);
+            guardarAsistencias();
+            
+            // Mostrar éxito
+            const nombreMostrar = alumno ? alumno.nombre : dni;
+            mostrarMensaje(mensaje, `✅ ¡Asistencia registrada! Bienvenido/a ${nombreMostrar}`, 'success');
+            
+            // Limpiar formulario
+            document.getElementById('dni').value = '';
+        });
+
+        // Navegación
+        document.getElementById('verMisAsistencias').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('alumnoView');
+            document.getElementById('resultadoConsulta').style.display = 'none';
+            document.getElementById('dniConsulta').value = '';
+        });
+
+        document.getElementById('verCronograma').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('cronogramaView');
+            cargarCronograma();
+        });
+
+        document.getElementById('adminToggle').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('loginView');
+        });
+
+        document.getElementById('volverDeAlumno').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('registroView');
+        });
+
+        document.getElementById('volverDeCronograma').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('registroView');
+        });
+
+        document.getElementById('volverDeLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('registroView');
+        });
+
+        // Consulta de asistencias del alumno
+        document.getElementById('consultaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const dni = document.getElementById('dniConsulta').value.trim();
+            
+            if (!/^\d{7,8}$/.test(dni)) {
+                alert('El DNI debe tener 7 u 8 dígitos');
+                return;
+            }
+            
+            const alumno = alumnos.find(a => a.dni === dni);
+            const asistenciasAlumno = asistencias.filter(a => a.dni === dni);
+            
+            // Calcular presencias y ausencias
+            const clasesRealizadas = cronograma.filter(c => new Date(c.fecha) <= new Date());
+            const presencias = asistenciasAlumno.length;
+            const ausencias = Math.max(0, clasesRealizadas.length - presencias);
+            
+            document.getElementById('presenciasCantidad').textContent = presencias;
+            document.getElementById('ausenciasCantidad').textContent = ausencias;
+            
+            // Mostrar detalle
+            const detalle = document.getElementById('detalleAlumno');
+            if (clasesRealizadas.length === 0) {
+                detalle.innerHTML = '<p style="text-align: center; color: #666;">Aún no hay clases realizadas</p>';
+            } else {
+                detalle.innerHTML = clasesRealizadas.map(clase => {
+                    const asistio = asistenciasAlumno.some(a => a.clase === clase.numero);
+                    const estado = asistio ? 'presente' : 'ausente';
+                    const icono = asistio ? '✓' : '✗';
+                    
+                    return `
+                        <div class="attendance-item ${estado}">
+                            <div>
+                                <strong>Clase ${clase.numero}</strong><br>
+                                <small>${formatearFecha(clase.fecha)}</small>
+                            </div>
+                            <div style="font-size: 24px;">
+                                ${icono}
+                            </div>
+                        </div>
+                    `;
+                }).reverse().join('');
+            }
+            
+            document.getElementById('resultadoConsulta').style.display = 'block';
+        });
+
+        // Login admin
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = document.getElementById('password').value;
+            const mensaje = document.getElementById('loginMessage');
+            
+            if (password === adminPassword) {
+                cambiarVista('adminPanel');
+                actualizarEstadisticas();
+                actualizarListaAsistencias();
+                generarQR();
+                document.getElementById('password').value = '';
+            } else {
+                mostrarMensaje(mensaje, '❌ Contraseña incorrecta', 'error');
+            }
+        });
+
+        // Cerrar sesión
+        document.getElementById('cerrarSesion').addEventListener('click', function(e) {
+            e.preventDefault();
+            cambiarVista('registroView');
+        });
+
+        // Panel de administración - Tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                this.classList.add('active');
+                document.getElementById(tabName + '-tab').classList.add('active');
+            });
+        });
+
+        // Guardar alumnos
+        document.getElementById('saveAlumnosBtn').addEventListener('click', function() {
+            const texto = document.getElementById('alumnosTextarea').value;
+            const lineas = texto.split('\n').filter(l => l.trim());
+            
+            const nuevosAlumnos = [];
+            const errores = [];
+            
+            lineas.forEach((linea, index) => {
+                const match = linea.match(/^(\d{7,8})\s*-\s*(.+)$/);
+                if (match) {
+                    nuevosAlumnos.push({
+                        dni: match[1].trim(),
+                        nombre: match[2].trim()
+                    });
+                } else {
+                    errores.push(`Línea ${index + 1}: formato incorrecto`);
+                }
+            });
+            
+            if (errores.length > 0) {
+                mostrarMensaje(
+                    document.getElementById('alumnosMessage'),
+                    '❌ Errores encontrados:\n' + errores.join('\n'),
+                    'error'
+                );
+                return;
+            }
+            
+            alumnos = nuevosAlumnos;
+            guardarAlumnos();
+            actualizarEstadisticas();
+            
+            mostrarMensaje(
+                document.getElementById('alumnosMessage'),
+                `✅ ${alumnos.length} alumnos guardados correctamente`,
+                'success'
+            );
+        });
+
+        // Limpiar alumnos
+        document.getElementById('clearAlumnosBtn').addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que querés eliminar todos los alumnos?')) {
+                alumnos = [];
+                guardarAlumnos();
+                document.getElementById('alumnosTextarea').value = '';
+                actualizarEstadisticas();
+                mostrarMensaje(
+                    document.getElementById('alumnosMessage'),
+                    '✅ Lista de alumnos eliminada',
+                    'success'
+                );
+            }
+        });
+
+        // Cambiar contraseña
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const mensaje = document.getElementById('configMessage');
+            
+            if (newPass !== confirmPass) {
+                mostrarMensaje(mensaje, '❌ Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                mostrarMensaje(mensaje, '❌ La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            adminPassword = newPass;
+            guardarPassword();
+            
+            mostrarMensaje(mensaje, '✅ Contraseña cambiada correctamente', 'success');
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+        });
+
+        // Resetear sistema
+        document.getElementById('resetSystemBtn').addEventListener('click', function() {
+            if (confirm('⚠️ ADVERTENCIA: Esto eliminará TODOS los datos del sistema (alumnos, asistencias, contraseña). ¿Estás seguro?')) {
+                if (confirm('¿REALMENTE estás seguro? Esta acción no se puede deshacer.')) {
+                    localStorage.clear();
+                    alert('✅ Sistema reseteado. La página se recargará.');
+                    location.reload();
+                }
+            }
+        });
+
+        // Actualizar estadísticas
+        function actualizarEstadisticas() {
+            document.getElementById('totalAsistencias').textContent = asistencias.length;
+            document.getElementById('totalAlumnos').textContent = alumnos.length;
+            
+            const hoy = new Date().toISOString().split('T')[0];
+            const asistenciasHoy = asistencias.filter(a => a.fecha.startsWith(hoy));
+            document.getElementById('alumnosHoy').textContent = asistenciasHoy.length;
+        }
+
+        // Actualizar lista de asistencias
+        function actualizarListaAsistencias() {
+            const lista = document.getElementById('attendanceList');
+            
+            if (asistencias.length === 0) {
+                lista.innerHTML = '<p style="text-align: center; color: #666;">No hay registros aún</p>';
+                return;
+            }
+            
+            lista.innerHTML = asistencias.slice(0, 50).map(a => {
+                const fecha = new Date(a.fecha);
+                const fechaStr = fecha.toLocaleDateString('es-AR');
+                const horaStr = fecha.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                
+                return `
+                    <div class="attendance-item">
+                        <div>
+                            <strong>${a.nombre}</strong><br>
+                            <small>DNI: ${a.dni} | Clase ${a.clase}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <small>${fechaStr}<br>${horaStr}</small>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Exportar a Excel
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            if (asistencias.length === 0) {
+                alert('No hay asistencias para exportar');
+                return;
+            }
+            
+            const datos = asistencias.map(a => ({
+                'DNI': a.dni,
+                'Nombre': a.nombre,
+                'Fecha': new Date(a.fecha).toLocaleDateString('es-AR'),
+                'Hora': new Date(a.fecha).toLocaleTimeString('es-AR'),
+                'Clase': a.clase,
+                'Tema': a.tema
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Asistencias');
+            
+            const fecha = new Date().toISOString().split('T')[0];
+            XLSX.writeFile(wb, `asistencias_enps_${fecha}.xlsx`);
+        });
+
+        // Generar QR
+        let qrCode = null;
+        function generarQR() {
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+            
+            const url = window.location.href.split('#')[0];
+            
+            qrCode = new QRCode(qrContainer, {
+                text: url,
+                width: 300,
+                height: 300,
+                colorDark: '#667eea',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        // Descargar QR
+        document.getElementById('downloadQRBtn').addEventListener('click', function() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (canvas) {
+                const url = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.download = 'qr_asistencia_enps.png';
+                link.href = url;
+                link.click();
+            }
+        });
+
+        // Cargar alumnos existentes en textarea
+        if (alumnos.length > 0) {
+            document.getElementById('alumnosTextarea').value = 
+                alumnos.map(a => `${a.dni} - ${a.nombre}`).join('\n');
+        }
+
+        // ========== SISTEMA DE VENTANA DE ASISTENCIA ==========
+        
+        function abrirVentana() {
+            const duracion = parseInt(document.getElementById('duracionVentana').value);
+            const ahora = Date.now();
+            
+            ventanaAsistencia = {
+                inicio: ahora,
+                fin: ahora + (duracion * 60 * 1000),
+                duracion: duracion
+            };
+            
+            guardarVentana();
+            actualizarEstadoVentana();
+            iniciarCronometro();
+        }
+        
+        function cerrarVentana() {
+            ventanaAsistencia = null;
+            guardarVentana();
+            actualizarEstadoVentana();
+            detenerCronometro();
+        }
+        
+        function actualizarEstadoVentana() {
+            const estadoAdmin = document.getElementById('estadoVentana');
+            const ventanaIndicador = document.getElementById('ventanaIndicador');
+            const ventanaCerrada = document.getElementById('ventanaCerrada');
+            const formulario = document.getElementById('asistenciaForm');
+            
+            const ahora = Date.now();
+            const activa = ventanaAsistencia && ventanaAsistencia.fin > ahora;
+            
+            // Vista de alumnos
+            if (activa) {
+                ventanaIndicador.style.display = 'block';
+                ventanaCerrada.style.display = 'none';
+                formulario.style.display = 'block';
+            } else {
+                ventanaIndicador.style.display = 'none';
+                ventanaCerrada.style.display = 'block';
+                formulario.style.display = 'none';
+            }
+            
+            // Vista de admin
+            if (!estadoAdmin) return;
+            
+            if (activa) {
+                const tiempoRestante = Math.ceil((ventanaAsistencia.fin - ahora) / 1000);
+                const minutos = Math.floor(tiempoRestante / 60);
+                const segundos = tiempoRestante % 60;
+                
+                const hoy = new Date().toISOString().split('T')[0];
+                const registrosHoy = asistencias.filter(a => a.fecha.startsWith(hoy)).length;
+                
+                estadoAdmin.innerHTML = `
+                    <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div>
+                                <strong style="color: #155724; font-size: 18px;">✅ Ventana ABIERTA</strong>
+                                <p style="color: #155724; margin-top: 5px; font-size: 14px;">
+                                    Tiempo restante: <strong>${minutos}:${segundos.toString().padStart(2, '0')}</strong>
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 32px; color: #28a745; font-weight: 700;">${registrosHoy}</div>
+                                <div style="color: #155724; font-size: 12px;">registrados hoy</div>
+                            </div>
+                        </div>
+                        <button onclick="cerrarVentana()" class="btn-secondary" style="width: 100%; margin-top: 10px;">
+                            🔒 Cerrar Ventana Ahora
+                        </button>
+                    </div>
+                `;
+            } else {
+                estadoAdmin.innerHTML = `
+                    <div style="background: #f8d7da; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                        <strong style="color: #721c24;">🔒 Ventana CERRADA</strong>
+                        <p style="color: #721c24; margin-top: 5px; font-size: 14px;">
+                            Los alumnos no pueden registrar asistencia
+                        </p>
+                    </div>
+                    <button onclick="abrirVentana()" class="btn-success" style="width: 100%;">
+                        ✅ Abrir Ventana de Asistencia
+                    </button>
+                `;
+            }
+        }
+        
+        function iniciarCronometro() {
+            detenerCronometro();
+            
+            intervaloCronometro = setInterval(() => {
+                const ahora = Date.now();
+                
+                if (!ventanaAsistencia || ventanaAsistencia.fin <= ahora) {
+                    cerrarVentana();
+                    return;
+                }
+                
+                const tiempoRestante = Math.ceil((ventanaAsistencia.fin - ahora) / 1000);
+                const minutos = Math.floor(tiempoRestante / 60);
+                const segundos = tiempoRestante % 60;
+                
+                // Actualizar cronómetro en vista de alumno
+                const tiempoRestanteEl = document.getElementById('tiempoRestante');
+                if (tiempoRestanteEl) {
+                    tiempoRestanteEl.textContent = `${minutos}:${segundos.toString().padStart(2, '0')}`;
+                }
+                
+                // Actualizar vista de admin si está abierta
+                if (document.getElementById('adminPanel').classList.contains('active')) {
+                    actualizarEstadoVentana();
+                    actualizarEstadisticas();
+                }
+            }, 1000);
+        }
+        
+        function detenerCronometro() {
+            if (intervaloCronometro) {
+                clearInterval(intervaloCronometro);
+                intervaloCronometro = null;
+            }
+        }
+        
+        // Exponer funciones globalmente para los botones
+        window.abrirVentana = abrirVentana;
+        window.cerrarVentana = cerrarVentana;
+
+        // Cargar select de clases
+        function cargarSelectClases() {
+            const select = document.getElementById('selectClase');
+            const hoy = new Date();
+            
+            // Solo mostrar clases que ya pasaron o son hoy
+            const clasesRealizadas = cronograma.filter(c => {
+                const fechaClase = new Date(c.fecha + 'T00:00:00');
+                return fechaClase <= hoy;
+            });
+            
+            select.innerHTML = '<option value="">-- Seleccioná una clase --</option>' +
+                clasesRealizadas.map(c => 
+                    `<option value="${c.numero}">Clase ${c.numero} - ${formatearFecha(c.fecha)} - ${c.tema}</option>`
+                ).join('');
+        }
+
+        // Mostrar detalle de clase
+        document.getElementById('selectClase').addEventListener('change', function() {
+            const numeroClase = parseInt(this.value);
+            
+            if (!numeroClase) {
+                document.getElementById('detalleClase').style.display = 'none';
+                return;
+            }
+            
+            const clase = cronograma.find(c => c.numero === numeroClase);
+            const asistentesClase = asistencias.filter(a => a.clase === numeroClase);
+            
+            // Calcular estadísticas
+            const presentes = asistentesClase.length;
+            const ausentes = alumnos.length > 0 ? Math.max(0, alumnos.length - presentes) : 0;
+            const porcentaje = alumnos.length > 0 ? Math.round((presentes / alumnos.length) * 100) : 0;
+            
+            document.getElementById('presentesClase').textContent = presentes;
+            document.getElementById('ausentesClase').textContent = ausentes;
+            document.getElementById('porcentajeClase').textContent = porcentaje + '%';
+            
+            // Lista de presentes
+            const listaPresentes = document.getElementById('listaPresentesClase');
+            if (presentes === 0) {
+                listaPresentes.innerHTML = '<p style="text-align: center; color: #666;">No hay asistencias registradas</p>';
+            } else {
+                listaPresentes.innerHTML = asistentesClase
+                    .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                    .map(a => {
+                        const fecha = new Date(a.fecha);
+                        const horaStr = fecha.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+                        return `
+                            <div class="attendance-item presente">
+                                <div>
+                                    <strong>${a.nombre}</strong><br>
+                                    <small>DNI: ${a.dni}</small>
+                                </div>
+                                <div style="text-align: right;">
+                                    <small>${horaStr}</small>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+            }
+            
+            // Lista de ausentes
+            const listaAusentes = document.getElementById('listaAusentesClase');
+            if (alumnos.length === 0) {
+                listaAusentes.innerHTML = '<p style="text-align: center; color: #666;">No hay alumnos cargados</p>';
+            } else {
+                const dnisPresentesSet = new Set(asistentesClase.map(a => a.dni));
+                const alumnosAusentes = alumnos.filter(a => !dnisPresentesSet.has(a.dni));
+                
+                if (alumnosAusentes.length === 0) {
+                    listaAusentes.innerHTML = '<p style="text-align: center; color: #666;">¡Todos presentes! 🎉</p>';
+                } else {
+                    listaAusentes.innerHTML = alumnosAusentes
+                        .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                        .map(a => `
+                            <div class="attendance-item ausente">
+                                <div>
+                                    <strong>${a.nombre}</strong><br>
+                                    <small>DNI: ${a.dni}</small>
+                                </div>
+                                <div style="font-size: 20px; color: #721c24;">
+                                    ✗
+                                </div>
+                            </div>
+                        `).join('');
+                }
+            }
+            
+            // Guardar clase seleccionada para exportar
+            window.claseSeleccionada = numeroClase;
+            
+            document.getElementById('detalleClase').style.display = 'block';
+        });
+
+        // Exportar Excel de clase específica
+        document.getElementById('exportClaseBtn').addEventListener('click', function() {
+            if (!window.claseSeleccionada) {
+                alert('No hay clase seleccionada');
+                return;
+            }
+            
+            const clase = cronograma.find(c => c.numero === window.claseSeleccionada);
+            const asistentesClase = asistencias.filter(a => a.clase === window.claseSeleccionada);
+            const dnisPresentesSet = new Set(asistentesClase.map(a => a.dni));
+            
+            // Crear lista completa con presentes y ausentes
+            const datos = alumnos.map(alumno => {
+                const asistio = dnisPresentesSet.has(alumno.dni);
+                const registro = asistentesClase.find(a => a.dni === alumno.dni);
+                
+                return {
+                    'DNI': alumno.dni,
+                    'Nombre': alumno.nombre,
+                    'Estado': asistio ? 'PRESENTE' : 'AUSENTE',
+                    'Hora de registro': asistio ? new Date(registro.fecha).toLocaleTimeString('es-AR') : '-'
+                };
+            }).sort((a, b) => a.Nombre.localeCompare(b.Nombre));
+            
+            const ws = XLSX.utils.json_to_sheet(datos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, `Clase ${clase.numero}`);
+            
+            XLSX.writeFile(wb, `clase_${clase.numero}_${clase.fecha}.xlsx`);
+        });
+
+        // Inicializar
+        actualizarInfoClase();
+        actualizarEstadisticas();
+        cargarSelectClases();
+        actualizarEstadoVentana();
+        
+        // Si hay una ventana activa al cargar, iniciar cronómetro
+        if (ventanaAsistencia && ventanaAsistencia.fin > Date.now()) {
+            iniciarCronometro();
+        } else if (ventanaAsistencia) {
+            // Si la ventana expiró, limpiarla
+            cerrarVentana();
+        }
+    </script>
+</body>
+</html>
